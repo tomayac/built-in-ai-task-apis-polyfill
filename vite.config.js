@@ -1,7 +1,7 @@
-export default {  
+export default {
   base: './',
   build: {
     outDir: 'docs',
-    target: 'esnext'
-  }
+    target: 'esnext',
+  },
 };

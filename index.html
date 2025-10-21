@@ -15,7 +15,6 @@
     <title>Built-in AI task APIs polyfill</title>
   </head>
   <body>
-    <h1>Built-in AI task APIs polyfill</h1>    
     <script type="module" src="/src/install.js"></script>
     <script type="module">
       import { configureFirebaseBackend } from './src/backends/firebase/index.js';
@@ -25,21 +24,34 @@
         const text = `Thomas Steiner is a Developer Relations Engineer at Google, focused on Web AI, WebAssembly, and Project Fugu. He's an alumnus of University of Lyon (Postdoc), Polytechnic University of Barcelona (Ph. D.), and University of Karlsruhe (MA).
 
 He blogs at blog.tomayac.com and posts as @tomayac@toot.cafe. On all other places on the Internet, chances are that he's there under his online alias tomayac.`;
+        document.body.textContent = '# Built-in AI task APIs polyfill\n\n';
+        document.body.append('## Original text\n\n');
         document.body.append(text);
         document.body.append('\n\n');
 
+        document.body.append('## Availability\n\n');
         document.body.append(await Summarizer.availability());
         document.body.append('\n\n');
-        const summarizer = await Summarizer.create();
 
+        const summarizer = await Summarizer.create({
+          sharedContext: 'This is a short biography of a conference speaker.',
+          expectedInputLanguages: ['en'],
+          expectedContextLanguages: ['en'],
+          outputLanguage: 'en',
+          format: 'markdown',
+          type: 'key-points',
+          length: 'short',
+        });
+
+        document.body.append('## Non-streaming\n\n');
         document.body.append(await summarizer.summarize(text));
         document.body.append('\n\n');
 
+        document.body.append('## Streaming\n\n');
         const stream = summarizer.summarizeStreaming(text);
         for await (const chunk of stream) {
           document.body.append(chunk);
         }
-        document.body.append('\n\n');
       })();
     </script>
   </body>
