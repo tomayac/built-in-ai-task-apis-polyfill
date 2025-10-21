@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <style>
+      body {
+        white-space: pre-wrap;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>built-in-ai-polyfill</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/install.js"></script>
+    <script type="module">
+      import { configureFirebaseBackend } from './src/backends/firebase/index.js';
+      configureFirebaseBackend();
+
+      (async () => {
+        const text = `Thomas Steiner is a Developer Relations Engineer at Google, focused on Web AI, WebAssembly, and Project Fugu. He's an alumnus of University of Lyon (Postdoc), Polytechnic University of Barcelona (Ph. D.), and University of Karlsruhe (MA).
+
+He blogs at blog.tomayac.com and posts as @tomayac@toot.cafe. On all other places on the Internet, chances are that he's there under his online alias tomayac.`;
+        document.body.append(text);
+        document.body.append('\n\n');
+
+        document.body.append(await Summarizer.availability());
+        document.body.append('\n\n');
+        const summarizer = await Summarizer.create();
+
+        document.body.append(await summarizer.summarize(text));
+        document.body.append('\n\n');
+
+        const stream = summarizer.summarizeStreaming(text);
+        for await (const chunk of stream) {
+          document.body.append(chunk);
+        }
+        document.body.append('\n\n');
+      })();
+    </script>
+  </body>
+</html>
