@@ -22,14 +22,14 @@
 
       (async () => {
         const text = `Thomas Steiner is a Developer Relations Engineer at Google, focused on Web AI, WebAssembly, and Project Fugu. He's an alumnus of University of Lyon (Postdoc), Polytechnic University of Barcelona (Ph. D.), and University of Karlsruhe (MA).
-
+				
 He blogs at blog.tomayac.com and posts as @tomayac@toot.cafe. On all other places on the Internet, chances are that he's there under his online alias tomayac.`;
         document.body.textContent = '# Built-in AI task APIs polyfill\n\n';
         document.body.append('## Original text\n\n');
         document.body.append(text);
         document.body.append('\n\n');
 
-        document.body.append('## Availability\n\n');
+        document.body.append('## Summarizer availability\n\n');
         document.body.append(await Summarizer.availability());
         document.body.append('\n\n');
 
@@ -43,15 +43,55 @@ He blogs at blog.tomayac.com and posts as @tomayac@toot.cafe. On all other place
           length: 'short',
         });
 
-        document.body.append('## Non-streaming\n\n');
+        document.body.append('## Summarizer non-streaming summary\n\n');
         document.body.append(await summarizer.summarize(text));
         document.body.append('\n\n');
 
-        document.body.append('## Streaming\n\n');
+        document.body.append('## Summarizer streaming summary\n\n');
         const stream = summarizer.summarizeStreaming(text);
         for await (const chunk of stream) {
           document.body.append(chunk);
         }
+        document.body.append('\n\n');
+
+        document.body.append('## Summarizer measure input usage\n\n');
+        document.body.append(String(await summarizer.measureInputUsage(text)));
+        document.body.append('\n\n');
+
+        document.body.append('## Writer availability\n\n');
+        document.body.append(await Writer.availability());
+        document.body.append('\n\n');
+
+        const writer = await Writer.create({
+          sharedContext: 'This is a biography of a conference speaker.',
+          expectedInputLanguages: ['en'],
+          expectedContextLanguages: ['en'],
+          outputLanguage: 'en',
+          format: 'plain-text',
+          tone: 'formal',
+          length: 'medium',
+        });
+
+        document.body.append('## Writer non-streaming write\n\n');
+        document.body.append(
+          await writer.write(
+            'Write a short biography about Thomas, based on the text'
+          )
+        );
+        document.body.append('\n\n');
+
+        document.body.append('## Writer streaming write\n\n');
+        const writerStream = writer.writeStreaming(
+          'Write a biography about Thomas, based on the text'
+        );
+        for await (const chunk of writerStream) {
+          document.body.append(chunk);
+        }
+
+        document.body.append('\n\n');
+        document.body.append('## Writer measure input usage\n\n');
+        document.body.append(String(await writer.measureInputUsage(text)));
+        document.body.append('\n\n');
       })();
     </script>
   </body>

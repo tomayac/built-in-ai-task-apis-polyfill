@@ -1,5 +1,5 @@
 import { Summarizer } from './public/Summarizer.js';
-// import { WriterPolyfill } from './public/Writer.js'; // Future
+import { Writer } from './public/Writer.js';
 
 if (!ReadableStream.prototype[Symbol.asyncIterator]) {
   ReadableStream.prototype[Symbol.asyncIterator] = async function* () {
@@ -29,13 +29,12 @@ function installPolyfills() {
     console.log('Native AI Summarizer detected. Polyfill not required.');
   }
 
-  /*
-  // Example for adding Writer
   if (!self.Writer) {
-    self.Writer = WriterPolyfill;
-    console.log("Polyfill for AI Writer has been installed.");
+    self.Writer = Writer;
+    console.log('Polyfill for AI Writer has been installed.');
+  } else {
+    console.log('Native AI Writer detected. Polyfill not required.');
   }
-  */
 }
 
 installPolyfills();
