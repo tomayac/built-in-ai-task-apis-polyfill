@@ -1,5 +1,6 @@
 import { Summarizer } from './public/Summarizer.js';
 import { Writer } from './public/Writer.js';
+import { Rewriter } from './public/Rewriter.js';
 
 if (!ReadableStream.prototype[Symbol.asyncIterator]) {
   ReadableStream.prototype[Symbol.asyncIterator] = async function* () {
@@ -34,6 +35,13 @@ function installPolyfills() {
     console.log('Polyfill for AI Writer has been installed.');
   } else {
     console.log('Native AI Writer detected. Polyfill not required.');
+  }
+
+  if (!self.Rewriter) {
+    self.Rewriter = Rewriter;
+    console.log('Polyfill for AI Rewriter has been installed.');
+  } else {
+    console.log('Native AI Rewriter detected. Polyfill not required.');
   }
 }
 

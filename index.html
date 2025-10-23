@@ -75,14 +75,15 @@ He blogs at blog.tomayac.com and posts as @tomayac@toot.cafe. On all other place
         document.body.append('## Writer non-streaming write\n\n');
         document.body.append(
           await writer.write(
-            'Write a short biography about Thomas, based on the text'
+            'Write a short biography about Thomas, based on the text:\n\n' +
+              text
           )
         );
         document.body.append('\n\n');
 
         document.body.append('## Writer streaming write\n\n');
         const writerStream = writer.writeStreaming(
-          'Write a biography about Thomas, based on the text'
+          'Write a biography about Thomas, based on the text:\n\n' + text
         );
         for await (const chunk of writerStream) {
           document.body.append(chunk);
@@ -91,6 +92,42 @@ He blogs at blog.tomayac.com and posts as @tomayac@toot.cafe. On all other place
         document.body.append('\n\n');
         document.body.append('## Writer measure input usage\n\n');
         document.body.append(String(await writer.measureInputUsage(text)));
+        document.body.append('\n\n');
+
+        document.body.append('## Rewriter availability\n\n');
+        document.body.append(await Rewriter.availability());
+        document.body.append('\n\n');
+
+        const rewriter = await Rewriter.create({
+          sharedContext: 'This is a biography of a conference speaker.',
+          expectedInputLanguages: ['en'],
+          expectedContextLanguages: ['en'],
+          outputLanguage: 'en',
+          format: 'plain-text',
+          tone: 'more-formal',
+          length: 'longer',
+        });
+
+        document.body.append('## Rewriter non-streaming rewrite\n\n');
+        document.body.append(
+          await rewriter.rewrite(
+            'Rewrite a short biography about Thomas, based on the text:\n\n' +
+              text
+          )
+        );
+        document.body.append('\n\n');
+
+        document.body.append('## Rewriter streaming rewrite\n\n');
+        const rewriterStream = rewriter.rewriteStreaming(
+          'Rewrite a biography about Thomas, based on the text:\n\n' + text
+        );
+        for await (const chunk of rewriterStream) {
+          document.body.append(chunk);
+        }
+
+        document.body.append('\n\n');
+        document.body.append('## Rewriter measure input usage\n\n');
+        document.body.append(String(await rewriter.measureInputUsage(text)));
         document.body.append('\n\n');
       })();
     </script>
